@@ -22,18 +22,18 @@ public class ProjectSecurityConfig {
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService(){
-        /*Approach 1 where we use WithDefaultPasswordEncoder method while creating the user details*/
-//        UserDetails admin = User.withDefaultPasswordEncoder().username("admin").password("1234").authorities("admin").build();
-//        UserDetails user = User.withDefaultPasswordEncoder().username("user").password("1234").authorities("user").build();
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsService(){
+//        /*Approach 1 where we use WithDefaultPasswordEncoder method while creating the user details*/
+////        UserDetails admin = User.withDefaultPasswordEncoder().username("admin").password("1234").authorities("admin").build();
+////        UserDetails user = User.withDefaultPasswordEncoder().username("user").password("1234").authorities("user").build();
+////        return new InMemoryUserDetailsManager(admin,user);
+//
+//        /*Approach 2 where we use NoOpPasswordEncoder Bean while creating the user details*/
+//        UserDetails admin = User.withUsername("admin").password("1234").authorities("admin").build();
+//        UserDetails user = User.withUsername("user").password("1234").authorities("user").build();
 //        return new InMemoryUserDetailsManager(admin,user);
-
-        /*Approach 2 where we use NoOpPasswordEncoder Bean while creating the user details*/
-        UserDetails admin = User.withUsername("admin").password("1234").authorities("admin").build();
-        UserDetails user = User.withUsername("user").password("1234").authorities("user").build();
-        return new InMemoryUserDetailsManager(admin,user);
-    }
+//    }
 
     /**
      * NoOpPasswordEncoder is not recommended for production usage.
