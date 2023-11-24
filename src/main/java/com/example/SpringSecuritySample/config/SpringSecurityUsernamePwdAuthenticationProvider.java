@@ -1,5 +1,6 @@
 package com.example.SpringSecuritySample.config;
 
+import com.example.SpringSecuritySample.model.Authority;
 import com.example.SpringSecuritySample.model.Customer;
 import com.example.SpringSecuritySample.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class SpringSecurityUsernamePwdAuthenticationProvider implements AuthenticationProvider {
@@ -40,6 +42,14 @@ public class SpringSecurityUsernamePwdAuthenticationProvider implements Authenti
         }else {
             throw new BadCredentialsException("No user registered with this details!");
         }
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
     }
 
     @Override

@@ -43,5 +43,4 @@ public class AccountTransactions {
     @Column(name = "create_dt")
     private String createDt;
 
-
 }
