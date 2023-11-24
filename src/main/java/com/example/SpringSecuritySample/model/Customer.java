@@ -18,6 +18,7 @@ public class Customer {
     @GenericGenerator(name = "native",strategy = "native")
     @Column(name = "customer_id")
     private int id;
+    private String name;
     private String email;
     @Column(name = "mobile_number")
     private String mobileNumber;
