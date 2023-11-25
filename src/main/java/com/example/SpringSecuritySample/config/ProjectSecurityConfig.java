@@ -26,52 +26,15 @@ import java.util.Collections;
 public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf");
-        http.securityContext((context) -> context.requireExplicitSave(false))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                        config.setAllowedMethods(Collections.singletonList("*"));
-                        config.setAllowCredentials(true);
-                        config.setAllowedHeaders(Collections.singletonList("*"));
-                        config.setMaxAge(3600L);
-                        return config;
-                    }
-                })).csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact","/register")
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests((requests)->requests
-                        /*.requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWACCOUNT","VIEWBALANCE")
-                        .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
-                        .requestMatchers("/myCards").hasAuthority("VIEWCARDS")*/
-                        .requestMatchers("/myAccount").hasRole("USER")
-                        .requestMatchers("/myBalance").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/myLoans").hasRole("USER")
-                        .requestMatchers("/myCards").hasRole("USER")
-                        .requestMatchers("/user").authenticated()
-                        .requestMatchers("/notices","/contact","/register","/updateUser/{id}").permitAll())
+        http.csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
+                        .requestMatchers("/notices", "/contact", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService(){
-//        /*Approach 1 where we use WithDefaultPasswordEncoder method while creating the user details*/
-////        UserDetails admin = User.withDefaultPasswordEncoder().username("admin").password("1234").authorities("admin").build();
-////        UserDetails user = User.withDefaultPasswordEncoder().username("user").password("1234").authorities("user").build();
-////        return new InMemoryUserDetailsManager(admin,user);
-//
-//        /*Approach 2 where we use NoOpPasswordEncoder Bean while creating the user details*/
-//        UserDetails admin = User.withUsername("admin").password("1234").authorities("admin").build();
-//        UserDetails user = User.withUsername("user").password("1234").authorities("user").build();
-//        return new InMemoryUserDetailsManager(admin,user);
-//    }
 
     /**
      * NoOpPasswordEncoder is not recommended for production usage.
